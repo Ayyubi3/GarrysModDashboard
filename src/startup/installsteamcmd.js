@@ -3,23 +3,15 @@ const unzipper = require('unzipper');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-
-
-const { filesExists } = require("../utils/index.js")
+const fileHelper = require("../utils/fileHelper")
 
 const STEAM_CMD_LINK_WIN32 = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
 
 async function install_steamcmd() {
 
-    if (filesExists(path.join(path.join(process.env.ROOT, "steamcmd.exe")))) {
-        console.log("SteamCMD already installed.")
-        return true
-    }
-
-
     console.log("SteamCMD installation")
 
-    const URL = os.platform == "win32" ? STEAM_CMD_LINK_WIN32 : ""
+    const URL = STEAM_CMD_LINK_WIN32
 
     try {
         const response = await axios({
@@ -49,4 +41,15 @@ async function install_steamcmd() {
     return true
 }
 
-module.exports = { install_steamcmd }
+
+function check_steamcmd() {
+    if (fileHelper.filesExists(path.join(process.env.ROOT, "steamcmd.exe"))) {
+        console.log("SteamCMD already installed.")
+        return true
+    }
+    console.log("SteamCMD not installed.")
+    return false
+
+}
+
+module.exports = { check_steamcmd, install_steamcmd }
